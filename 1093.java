@@ -5,25 +5,26 @@ class Solution {
 
         // First, find Sample Size.
 
-        int sampleSize = 0;
+        double sampleSize = 0;
         for (int i = 0; i < 256; i++) {
             sampleSize = sampleSize + count[i];
         }
 
         // Then, find median elements.
-        int lowerMedian = -1, upperMedian = -1;
+        long lowerMedian = -1, upperMedian = -1;
         double low = -1, high = -1;
 
         if (sampleSize % 2 == 0) {
-            lowerMedian = sampleSize / 2 - 1;
-            upperMedian = sampleSize / 2;
+            lowerMedian = (long) sampleSize / 2 - 1;
+            upperMedian = (long) sampleSize / 2;
         } else {
-            lowerMedian = sampleSize / 2;
-            upperMedian = sampleSize / 2;
+            lowerMedian = (long) sampleSize / 2;
+            upperMedian = (long) sampleSize / 2;
         }
 
         int lastRepeated = -1, maxRepeat = -1, maxRepeatIndex = -1;
         int pointer = -1;
+        long sum = 0;
 
         for (int index = 0; index < 256; index++) {
             int numCount = count[index];
@@ -42,7 +43,7 @@ class Solution {
                 }
 
                 // Update the mean value.
-                answer[2] += (double) (index * numCount) / (double) sampleSize;
+                sum += index * (long) numCount;
 
                 // Check if we are traversing the median.
                 if (pointer + numCount >= lowerMedian && pointer < lowerMedian) {
@@ -58,8 +59,8 @@ class Solution {
         }
 
         answer[1] = lastRepeated;
+        answer[2] = sum / sampleSize;
         answer[3] = (high + low) / 2.0;
-
         answer[4] = maxRepeatIndex;
 
         return answer;
