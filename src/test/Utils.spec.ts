@@ -140,3 +140,14 @@ Cover all cases/path/scenarios
 
 100% code coverage: Not a great indicator.
 */
+
+
+/*
+Test aliases
+
+it.skip / xit
+it.only / fit
+it.todo
+it.concurrent
+
+*/
