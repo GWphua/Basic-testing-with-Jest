@@ -1,15 +1,46 @@
 import {
   calculateComplexity,
+  OtherStringUtils,
   toUpperCaseWithCallback,
 } from "../../app/doubles/OtherUtils";
+import { toUpperCase } from "../../app/Utils";
 
 describe("OtherUtils test suite", () => {
+  describe("OtherStringUtils tests with spies", () => {
+    let sut: OtherStringUtils;
+
+    beforeEach(() => {
+      sut = new OtherStringUtils();
+    });
+
+    test("Use a spy to track calls", () => {
+      const toUpperCaseSpy = jest.spyOn(sut, "toUpperCase");
+      sut.toUpperCase("asa");
+      expect(toUpperCaseSpy).toBeCalledWith("asa");
+    });
+
+    test("Use a spy to track calls to other modules", () => {
+      const logStringSpy = jest.spyOn(sut, "logString");
+      sut.logString("abc");
+      expect(logStringSpy).toBeCalledWith("abc");
+    });
+
+    test("Use a spy to replace the implementation of a method", () => {
+      // Not a good practice, but also a last-resort if we want to replace the implementation of a method.
+      jest.spyOn(sut as any, "callExternalService").mockImplementation(() => {
+        console.log("Calling mocked implementation");
+      });
+
+      (sut as any).callExternalService();
+    });
+  });
+
   describe("Tracking callbacks with Jest mocks", () => {
     const callbackMock = jest.fn();
 
     afterEach(() => {
       jest.clearAllMocks();
-    })
+    });
 
     it("Calls callback for invalid argument - track calls", () => {
       const actual = toUpperCaseWithCallback("", callbackMock);

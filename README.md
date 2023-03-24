@@ -19,3 +19,8 @@
 - The way we use them greatly influences the way we write tests.
 - If need to use them too much, there is something wrong with our code.
 - Testing / Mocking stiles: London / Chicago.
+
+#### Mocks vs spies
+- Spies are not directly injected into SUT.
+- Original functionality is preserved with spies.
+- Spies usually are used to track method calls.
