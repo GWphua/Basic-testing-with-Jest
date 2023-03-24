@@ -14,3 +14,8 @@
     5. Mocks: Pre-programmed with expectations.
   - Note for Jest: Mocks and spies have a lot in common.
 
+### Mocks
+- Most used, most debated.
+- The way we use them greatly influences the way we write tests.
+- If need to use them too much, there is something wrong with our code.
+- Testing / Mocking stiles: London / Chicago.
