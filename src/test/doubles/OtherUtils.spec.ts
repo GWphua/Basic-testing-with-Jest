@@ -4,6 +4,35 @@ import {
 } from "../../app/doubles/OtherUtils";
 
 describe("OtherUtils test suite", () => {
+  describe("Tracking callbacks", () => {
+    let callbackArguments = [];
+    let timesCalled = 0;
+
+    function callbackMock(arg: string) {
+      callbackArguments.push(arg);
+      timesCalled++;
+    }
+
+    afterEach(() => {
+      callbackArguments = [];
+      timesCalled = 0;
+    });
+
+    it("Calls callback for invalid argument - track calls", () => {
+      const actual = toUpperCaseWithCallback("", callbackMock);
+      expect(actual).toBeUndefined();
+      expect(callbackArguments).toContain("Invalid argument!");
+      expect(timesCalled).toBe(1);
+    });
+
+    it("Calls callback for valid argument - track calls", () => {
+      const actual = toUpperCaseWithCallback("abc", callbackMock);
+      expect(actual).toBe("ABC");
+      expect(callbackArguments).toContain(`Called function with abc`);
+      expect(timesCalled).toBe(1);
+    });
+  });
+
   it("Calculates complexity", () => {
     const someInfo = {
       length: 5,
