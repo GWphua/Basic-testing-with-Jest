@@ -4,6 +4,28 @@ import {
 } from "../../app/doubles/OtherUtils";
 
 describe("OtherUtils test suite", () => {
+  describe("Tracking callbacks with Jest mocks", () => {
+    const callbackMock = jest.fn();
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    })
+
+    it("Calls callback for invalid argument - track calls", () => {
+      const actual = toUpperCaseWithCallback("", callbackMock);
+      expect(actual).toBeUndefined();
+      expect(callbackMock).toBeCalledWith("Invalid argument!");
+      expect(callbackMock).toBeCalledTimes(1);
+    });
+
+    it("Calls callback for valid argument - track calls", () => {
+      const actual = toUpperCaseWithCallback("abc", callbackMock);
+      expect(actual).toBe("ABC");
+      expect(callbackMock).toBeCalledWith(`Called function with abc`);
+      expect(callbackMock).toBeCalledTimes(1);
+    });
+  });
+
   describe("Tracking callbacks", () => {
     let callbackArguments = [];
     let timesCalled = 0;
