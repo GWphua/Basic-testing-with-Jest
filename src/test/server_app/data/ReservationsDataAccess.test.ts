@@ -27,7 +27,7 @@ describe("ReservationsDataAccess test suite", () => {
 
   const someId = "1234";
 
-  const reservation: Reservation = {
+  const someReservation: Reservation = {
     id: "",
     room: "someRoom",
     user: "someUser",
@@ -47,8 +47,39 @@ describe("ReservationsDataAccess test suite", () => {
   it("should create a reservation", async () => {
     insertMock.mockResolvedValueOnce(someId);
 
-    const actual = await sut.createReservation(reservation);
+    const actual = await sut.createReservation(someReservation);
 
     expect(actual).toBe(someId);
+    expect(insertMock).toBeCalledWith(someReservation);
+  });
+
+  it("should update a reservation", async () => {
+    await sut.updateReservation(someId, "endDate", "someOtherEndDate");
+
+    expect(updateMock).toBeCalledWith(someId, "endDate", "someOtherEndDate");
+  });
+
+  it("should delete a reservation", async () => {
+    await sut.deleteReservation(someId);
+
+    expect(deleteMock).toBeCalledWith(someId);
+  });
+
+  it("should get a reservation", async () => {
+    getByMock.mockResolvedValueOnce(someReservation);
+
+    const actual = await sut.getReservation(someId);
+
+    expect(actual).toBe(someReservation);
+    expect(getByMock).toBeCalledWith("id", someId);
+  });
+
+  it("should get all reservations", async () => {
+    getAllMock.mockResolvedValueOnce([someReservation, someReservation]);
+
+    const actual = await sut.getAllReservations();
+
+    expect(actual).toEqual([someReservation, someReservation]);
+    expect(getAllMock).toBeCalledTimes(1);
   });
 });
