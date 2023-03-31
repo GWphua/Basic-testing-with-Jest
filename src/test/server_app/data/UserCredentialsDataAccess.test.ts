@@ -6,10 +6,12 @@ const getByMock = jest.fn();
 
 jest.mock("../../../app/server_app/data/DataBase", () => {
   return {
-    DataBase: {
-      insert: insertMock,
-      getBy: getByMock,
-    },
+    DataBase: jest.fn().mockImplementation(() => {
+      return {
+        insert: insertMock,
+        getBy: getByMock,
+      };
+    }),
   };
 });
 
@@ -25,5 +27,5 @@ describe("UserCredentialsDataAccess test suite", () => {
     jest.clearAllMocks();
   });
 
-  it("should call mock db", () => {})
+  it("should call mock db", () => {});
 });
