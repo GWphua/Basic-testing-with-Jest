@@ -76,7 +76,7 @@ describe("DataBase test suite", () => {
     await sut.insert(someObject1);
     await sut.insert(someObject2);
     const expected = [someObject1, someObject2];
-    
+
     const actual = await sut.getAllElements();
 
     expect(actual).toEqual(expected);
