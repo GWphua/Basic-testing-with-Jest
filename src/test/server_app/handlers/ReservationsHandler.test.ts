@@ -249,7 +249,7 @@ describe("ReservationsHandler test suite", () => {
     });
 
     it("should return not found for invalid id", async () => {
-      request.url = `/reservation/${someReservationId}`;
+      request.url = `/reservations/${someReservationId}`;
       reservationsDataAccessMock.getReservation.mockResolvedValueOnce(
         undefined
       );
@@ -263,7 +263,7 @@ describe("ReservationsHandler test suite", () => {
     });
 
     it("should return bad request for non-existent id", async () => {
-      request.url = "/reservation/";
+      request.url = "/reservations/";
 
       await sut.handleRequest();
 
@@ -280,7 +280,7 @@ describe("ReservationsHandler test suite", () => {
     });
 
     it("should delete reservation with provided id", async () => {
-      request.url = `/reservation/${someReservationId}`;
+      request.url = `/reservations/${someReservationId}`;
 
       await sut.handleRequest();
 
@@ -293,12 +293,12 @@ describe("ReservationsHandler test suite", () => {
       );
     });
 
-    it("should return bad request for non-existent id", async () => {
-      request.url = "/reservations";
+    it("should return bad request if no id provided", async () => {
+      request.url = "/reservations/";
 
       await sut.handleRequest();
 
-      expect(responseMock).toBe(HTTP_CODES.BAD_REQUEST);
+      expect(responseMock.statusCode).toBe(HTTP_CODES.BAD_REQUEST);
       expect(responseMock.write).toBeCalledWith(
         JSON.stringify("Please provide an ID!")
       );
