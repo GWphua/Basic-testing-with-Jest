@@ -1,3 +1,4 @@
+import { DataBase } from "../../app/server_app/data/DataBase";
 import {
   HTTP_CODES,
   HTTP_METHODS,
@@ -23,10 +24,57 @@ jest.mock("http", () => ({
   },
 }));
 
+const someAccount = {
+  id: "",
+  password: "somePassword",
+  userName: "someUserName",
+};
+
+const someToken = "1234";
+
+const jsonHeader = {
+  "Content-Type": "application/json",
+};
+
 describe("Login requests test suite", () => {
+  const insertSpy = jest.spyOn(DataBase.prototype, "insert");
+  const getBySpy = jest.spyOn(DataBase.prototype, "getBy");
+
+  beforeEach(() => {
+    requestWrapper.headers["user-agent"] = "jest tests";
+  });
+  
   afterEach(() => {
     requestWrapper.clearFields();
     responseWrapper.clearFields();
+  });
+
+  it("should login user for correct credentials", async () => {
+    requestWrapper.method = HTTP_METHODS.POST;
+    requestWrapper.body = someAccount;
+    requestWrapper.url = "localhost:8080/login";
+    getBySpy.mockResolvedValueOnce({
+      userName: "someUsername",
+      password: "somePassword",
+    });
+
+    await new Server().startServer();
+    await new Promise(process.nextTick);
+  });
+
+  it("should not login user with wrong credentials", async () => {
+    requestWrapper.method = HTTP_METHODS.POST;
+    requestWrapper.body = someAccount;
+    requestWrapper.url = "localhost:8080/login";
+    getBySpy.mockResolvedValueOnce(someAccount);
+    insertSpy.mockResolvedValueOnce(someToken);
+
+    await new Server().startServer();
+    await new Promise(process.nextTick);
+
+    expect(responseWrapper.statusCode).toBe(HTTP_CODES.CREATED);
+    expect(responseWrapper.body).toEqual({ token: someToken });
+    expect(responseWrapper.headers).toContainEqual(jsonHeader);
   });
 
   it("should reject bad requests with no username and password", async () => {
