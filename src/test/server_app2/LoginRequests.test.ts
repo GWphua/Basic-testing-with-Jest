@@ -43,7 +43,7 @@ describe("Login requests test suite", () => {
   beforeEach(() => {
     requestWrapper.headers["user-agent"] = "jest tests";
   });
-  
+
   afterEach(() => {
     requestWrapper.clearFields();
     responseWrapper.clearFields();
@@ -91,7 +91,6 @@ describe("Login requests test suite", () => {
 
   it("should do nothing for not supported methods", async () => {
     requestWrapper.method = HTTP_METHODS.DELETE;
-    requestWrapper.body = {};
     requestWrapper.url = "localhost:8080/login";
 
     await new Server().startServer();

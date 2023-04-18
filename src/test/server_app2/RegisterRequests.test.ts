@@ -62,7 +62,6 @@ describe("Register requests test suite", () => {
 
   it("should do nothing for not supported methods", async () => {
     requestWrapper.method = HTTP_METHODS.DELETE;
-    requestWrapper.body = {};
     requestWrapper.url = "localhost:8080/register";
 
     await new Server().startServer();
