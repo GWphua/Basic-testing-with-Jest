@@ -15,4 +15,3 @@ class Launcher {
 
 const launcher = new Launcher();
 launcher.startServer();
-
