@@ -47,22 +47,10 @@ describe("Login requests test suite", () => {
   afterEach(() => {
     requestWrapper.clearFields();
     responseWrapper.clearFields();
+    jest.clearAllMocks();
   });
 
   it("should login user for correct credentials", async () => {
-    requestWrapper.method = HTTP_METHODS.POST;
-    requestWrapper.body = someAccount;
-    requestWrapper.url = "localhost:8080/login";
-    getBySpy.mockResolvedValueOnce({
-      userName: "someUsername",
-      password: "somePassword",
-    });
-
-    await new Server().startServer();
-    await new Promise(process.nextTick);
-  });
-
-  it("should not login user with wrong credentials", async () => {
     requestWrapper.method = HTTP_METHODS.POST;
     requestWrapper.body = someAccount;
     requestWrapper.url = "localhost:8080/login";
@@ -75,6 +63,22 @@ describe("Login requests test suite", () => {
     expect(responseWrapper.statusCode).toBe(HTTP_CODES.CREATED);
     expect(responseWrapper.body).toEqual({ token: someToken });
     expect(responseWrapper.headers).toContainEqual(jsonHeader);
+  });
+
+  it("should not login user with wrong credentials", async () => {
+    requestWrapper.method = HTTP_METHODS.POST;
+    requestWrapper.body = someAccount;
+    requestWrapper.url = "localhost:8080/login";
+    getBySpy.mockResolvedValueOnce({
+      userName: "someUsername",
+      password: "somePassword",
+    });
+
+    await new Server().startServer();
+    await new Promise(process.nextTick);
+
+    expect(responseWrapper.statusCode).toBe(HTTP_CODES.NOT_FOUND);
+    expect(responseWrapper.body).toEqual("wrong username or password");
   });
 
   it("should reject bad requests with no username and password", async () => {

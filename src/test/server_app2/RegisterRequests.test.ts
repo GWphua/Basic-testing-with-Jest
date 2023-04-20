@@ -28,6 +28,7 @@ describe("Register requests test suite", () => {
   afterEach(() => {
     requestWrapper.clearFields();
     responseWrapper.clearFields();
+    jest.clearAllMocks();
   });
 
   it("should register new users", async () => {
