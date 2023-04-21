@@ -33,7 +33,7 @@ describe("Server app integration tests", () => {
     user: "someUser",
   };
 
-  it("should register new user with awesomeRequest", async () => {
+  it("should register new user", async () => {
     const result = await makeAwesomeRequest(
       {
         host: "localhost",
@@ -49,46 +49,53 @@ describe("Server app integration tests", () => {
   });
 
   it("should register new user", async () => {
-    const result = await fetch("http://localhost:8080/register", {
-      method: HTTP_METHODS.POST,
-      body: JSON.stringify(someUser),
-    });
+    const result = await makeAwesomeRequest(
+      {
+        host: "localhost",
+        port: 8080,
+        method: HTTP_METHODS.POST,
+        path: "/register",
+      },
+      someUser
+    );
 
-    const resultBody = await result.json();
-
-    expect(result.status).toBe(HTTP_CODES.CREATED);
-    expect(resultBody.userId).toBeDefined();
+    expect(result.statusCode).toBe(HTTP_CODES.CREATED);
+    expect(result.body.userId).toBeDefined();
   });
 
   let token: string;
   it("should login a registered user", async () => {
-    const result = await fetch("http://localhost:8080/login", {
-      method: HTTP_METHODS.POST,
-      body: JSON.stringify(someUser),
-    });
+    const result = await makeAwesomeRequest(
+      {
+        host: "localhost",
+        port: 8080,
+        method: HTTP_METHODS.POST,
+        path: "/login",
+      },
+      someUser
+    );
 
-    const resultBody = await result.json();
-
-    expect(result.status).toBe(HTTP_CODES.CREATED);
-    expect(resultBody.token).toBeDefined();
-    token = resultBody.token;
+    expect(result.statusCode).toBe(HTTP_CODES.CREATED);
+    expect(result.body.token).toBeDefined();
+    token = result.body.token;
   });
 
   let createdReservationId: string;
   it("should create reservation if authorized", async () => {
-    const result = await fetch("http://localhost:8080/reservation", {
-      method: HTTP_METHODS.POST,
-      body: JSON.stringify(someReservation),
-      headers: {
-        authorization: token,
+    const result = await makeAwesomeRequest(
+      {
+        host: "localhost",
+        port: 8080,
+        method: HTTP_METHODS.POST,
+        path: "/reservation",
+        headers: { authorization: token },
       },
-    });
+      someReservation
+    );
 
-    const resultBody = await result.json();
-
-    expect(result.status).toBe(HTTP_CODES.CREATED);
-    expect(resultBody.reservationId).toBeDefined();
-    createdReservationId = resultBody.reservationId;
+    expect(result.statusCode).toBe(HTTP_CODES.CREATED);
+    expect(result.body.reservationId).toBeDefined();
+    createdReservationId = result.body.reservationId;
   });
 
   it("should get reservation if authorized", async () => {
@@ -171,7 +178,7 @@ describe("Server app integration tests", () => {
     const getRequestBody: Reservation = await getResult.json();
     expect(getRequestBody.endDate).toBe("othreStartDate");
   });
-  
+
   it("should update reservation if authorized", async () => {
     const updateResult = await fetch(
       `http://localhost:8080/reservation/${createdReservationId}`,
@@ -197,6 +204,6 @@ describe("Server app integration tests", () => {
     );
 
     const getRequestBody: Reservation = await getResult.json();
-    expect(getRequestBody.endDate).toBe("othreStartDate");
+    expect(getRequestBody.endDate).toBe("otherStartDate");
   });
 });
