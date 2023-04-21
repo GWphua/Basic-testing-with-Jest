@@ -202,4 +202,30 @@ describe("Server app integration tests", () => {
 
     expect(getResult.body.startDate).toBe("someOtherStartDate");
   });
+
+  it("should delete reservation if authorized", async () => {
+    const deleteResult = await makeAwesomeRequest({
+      host: "localhost",
+      port: 8080,
+      method: HTTP_METHODS.DELETE,
+      path: `/reservation/${createdReservationId}`,
+      headers: {
+        authorization: token,
+      },
+    });
+
+    expect(deleteResult.statusCode).toBe(HTTP_CODES.OK);
+
+    const getResult = await makeAwesomeRequest({
+      host: "localhost",
+      port: 8080,
+      method: HTTP_METHODS.GET,
+      path: `/reservation/${createdReservationId}`,
+      headers: {
+        authorization: token,
+      },
+    });
+
+    expect(getResult.statusCode).toBe(HTTP_CODES.NOT_FOUND);
+  });
 });
