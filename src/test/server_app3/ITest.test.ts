@@ -88,7 +88,9 @@ describe("Server app integration tests", () => {
         port: 8080,
         method: HTTP_METHODS.POST,
         path: "/reservation",
-        headers: { authorization: token },
+        headers: {
+          authorization: token,
+        },
       },
       someReservation
     );
@@ -99,111 +101,105 @@ describe("Server app integration tests", () => {
   });
 
   it("should get reservation if authorized", async () => {
-    const result = await fetch(
-      `http://localhost:8080/reservation/${createdReservationId}`,
-      {
-        method: HTTP_METHODS.GET,
-        headers: {
-          authorization: token,
-        },
-      }
-    );
-    const resultBody = await result.json();
+    const result = await makeAwesomeRequest({
+      host: "localhost",
+      port: 8080,
+      method: HTTP_METHODS.GET,
+      path: `/reservation/${createdReservationId}`,
+      headers: {
+        authorization: token,
+      },
+    });
 
-    const expectedReservation = structuredClone(someReservation);
-    expectedReservation.id = createdReservationId;
+    const expectedReservation = {
+      ...someReservation,
+      id: createdReservationId,
+    };
 
-    expect(result.status).toBe(HTTP_CODES.OK);
-    expect(resultBody).toEqual(expectedReservation);
+    expect(result.statusCode).toBe(HTTP_CODES.OK);
+    expect(result.body).toEqual(expectedReservation);
   });
 
   it("should create and retrieve multiple reservations if authorized", async () => {
-    await fetch("http://localhost:8080/reservation", {
-      method: HTTP_METHODS.POST,
-      body: JSON.stringify(someReservation),
-      headers: {
-        authorization: token,
+    await makeAwesomeRequest(
+      {
+        host: "localhost",
+        port: 8080,
+        method: HTTP_METHODS.POST,
+        path: "/reservation",
+        headers: {
+          authorization: token,
+        },
       },
-    });
-    await fetch("http://localhost:8080/reservation", {
-      method: HTTP_METHODS.POST,
-      body: JSON.stringify(someReservation),
-      headers: {
-        authorization: token,
-      },
-    });
-    await fetch("http://localhost:8080/reservation", {
-      method: HTTP_METHODS.POST,
-      body: JSON.stringify(someReservation),
-      headers: {
-        authorization: token,
-      },
-    });
+      someReservation
+    );
 
-    const allResults = await fetch("http://localhost:8080/reservation/all", {
+    await makeAwesomeRequest(
+      {
+        host: "localhost",
+        port: 8080,
+        method: HTTP_METHODS.POST,
+        path: "/reservation",
+        headers: {
+          authorization: token,
+        },
+      },
+      someReservation
+    );
+
+    await makeAwesomeRequest(
+      {
+        host: "localhost",
+        port: 8080,
+        method: HTTP_METHODS.POST,
+        path: "/reservation",
+        headers: {
+          authorization: token,
+        },
+      },
+      someReservation
+    );
+
+    const allResults = await makeAwesomeRequest({
+      host: "localhost",
+      port: 8080,
       method: HTTP_METHODS.GET,
+      path: "/reservation/all",
       headers: {
         authorization: token,
       },
     });
-    const resultBody = await allResults.json();
-    expect(allResults.status).toBe(HTTP_CODES.OK);
-    expect(resultBody).toHaveLength(4);
+
+    expect(allResults.statusCode).toBe(HTTP_CODES.OK);
+    expect(allResults.body).toHaveLength(4);
   });
 
   it("should update reservation if authorized", async () => {
-    const updateResult = await fetch(
-      `http://localhost:8080/reservation/${createdReservationId}`,
+    const updateResult = await makeAwesomeRequest(
       {
+        host: "localhost",
+        port: 8080,
         method: HTTP_METHODS.PUT,
-        body: JSON.stringify({ startDate: "otherStartDate" }),
+        path: `/reservation/${createdReservationId}`,
         headers: {
           authorization: token,
         },
-      }
+      },
+      { startDate: "someOtherStartDate" }
     );
 
-    expect(updateResult.status).toBe(HTTP_CODES.OK);
+    expect(updateResult.statusCode).toBe(HTTP_CODES.OK);
 
-    const getResult = await fetch(
-      `http://localhost:8080/reservation/${createdReservationId}`,
-      {
-        method: HTTP_METHODS.GET,
-        headers: {
-          authorization: token,
-        },
-      }
-    );
+    const getResult = await makeAwesomeRequest({
+      host: "localhost",
+      port: 8080,
+      method: HTTP_METHODS.GET,
+      path: `/reservation/${createdReservationId}`,
+      headers: {
+        authorization: token,
+      },
+    });
 
-    const getRequestBody: Reservation = await getResult.json();
-    expect(getRequestBody.endDate).toBe("othreStartDate");
-  });
-
-  it("should update reservation if authorized", async () => {
-    const updateResult = await fetch(
-      `http://localhost:8080/reservation/${createdReservationId}`,
-      {
-        method: HTTP_METHODS.PUT,
-        body: JSON.stringify({ startDate: "otherStartDate" }),
-        headers: {
-          authorization: token,
-        },
-      }
-    );
-
-    expect(updateResult.status).toBe(HTTP_CODES.OK);
-
-    const getResult = await fetch(
-      `http://localhost:8080/reservation/${createdReservationId}`,
-      {
-        method: HTTP_METHODS.GET,
-        headers: {
-          authorization: token,
-        },
-      }
-    );
-
-    const getRequestBody: Reservation = await getResult.json();
-    expect(getRequestBody.endDate).toBe("otherStartDate");
+    expect(getResult.body.startDate).toBe("someOtherStartDate");
   });
 });
