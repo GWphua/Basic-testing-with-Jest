@@ -1,3 +1,4 @@
+import * as generate from "../../app/server_app/data/IdGenerator";
 import { Account } from "../../app/server_app/model/AuthModel";
 import { Reservation } from "../../app/server_app/model/ReservationModel";
 import {
@@ -228,5 +229,34 @@ describe("Server app integration tests", () => {
     });
 
     expect(getResult.statusCode).toBe(HTTP_CODES.NOT_FOUND);
+  });
+
+  it("snapshot test", async () => {
+    jest.spyOn(generate, "generateRandomId").mockReturnValueOnce("1234");
+
+    await makeAwesomeRequest(
+      {
+        host: "localhost",
+        port: 8080,
+        method: HTTP_METHODS.POST,
+        path: "/reservation",
+        headers: {
+          authorization: token,
+        },
+      },
+      someReservation
+    );
+
+    const getResult = await makeAwesomeRequest({
+      host: "localhost",
+      port: 8080,
+      method: HTTP_METHODS.GET,
+      path: `/reservation/1234`,
+      headers: {
+        authorization: token,
+      },
+    });
+
+    expect(getResult.body).toMatchSnapshot();
   });
 });
