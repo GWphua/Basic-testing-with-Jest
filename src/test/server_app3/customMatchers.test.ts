@@ -11,7 +11,7 @@ declare global {
 }
 
 expect.extend({
-  tobeValidReservation(reservation: Reservation) {
+  toBeValidReservation(reservation: Reservation) {
     const validId = reservation.id.length > 5;
     const validUser = reservation.user.length > 5;
 
