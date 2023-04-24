@@ -232,7 +232,7 @@ describe("Server app integration tests", () => {
   });
 
   it("snapshot test", async () => {
-    jest.spyOn(generate, "generateRandomId").mockReturnValueOnce("1234");
+    jest.spyOn(generate, "generateRandomId").mockReturnValueOnce("12345");
 
     await makeAwesomeRequest(
       {
@@ -251,7 +251,7 @@ describe("Server app integration tests", () => {
       host: "localhost",
       port: 8080,
       method: HTTP_METHODS.GET,
-      path: `/reservation/1234`,
+      path: `/reservation/12345`,
       headers: {
         authorization: token,
       },

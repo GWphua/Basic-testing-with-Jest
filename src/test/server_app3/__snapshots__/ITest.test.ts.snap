@@ -3,7 +3,7 @@
 exports[`Server app integration tests snapshot test 1`] = `
 {
   "endDate": "someEndDate",
-  "id": "1234",
+  "id": "12345",
   "room": "someRoom",
   "startDate": "someStartDate",
   "user": "someUser",
