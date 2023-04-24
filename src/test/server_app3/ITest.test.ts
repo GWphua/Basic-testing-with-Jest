@@ -232,7 +232,7 @@ describe("Server app integration tests", () => {
   });
 
   it("snapshot test", async () => {
-    jest.spyOn(generate, "generateRandomId").mockReturnValueOnce("12345");
+    jest.spyOn(generate, "generateRandomId").mockReturnValueOnce("1234");
 
     await makeAwesomeRequest(
       {
