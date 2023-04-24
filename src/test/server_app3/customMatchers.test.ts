@@ -2,6 +2,7 @@ import { Reservation } from "../../app/server_app/model/ReservationModel";
 
 interface CustomMatchers<R> {
   toBeValidReservation(): R;
+  toHaveUser(user: string): R;
 }
 
 declare global {
@@ -17,7 +18,16 @@ expect.extend({
 
     return {
       pass: validId && validUser,
-      message: () => "Expected rservation to have valid id and user",
+      message: () => "Expected reservation to have valid id and user",
+    };
+  },
+  toHaveUser(reservation: Reservation, user: string) {
+    const hasValidUser = user == reservation.user;
+
+    return {
+      pass: hasValidUser,
+      message: () =>
+        `Expected reservation to have user ${user}, received ${reservation.user}`,
     };
   },
 });
@@ -33,5 +43,6 @@ const someReservation: Reservation = {
 describe("custom matchers test", () => {
   it("check for valid reservation", () => {
     expect(someReservation).toBeValidReservation();
+    expect(someReservation).toHaveUser("someUser");
   });
 });
